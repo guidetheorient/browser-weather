@@ -128,7 +128,7 @@ a {
 
 /*wave-wrapper*/
 .wrapper .wave-wrapper{
-  display: none;
+  /* display: none; */
   position: absolute;
   right: -1px;
   top: 0;
@@ -184,6 +184,16 @@ a {
   }
 }
 
+/*js 切换颜色*/
+.wrapper .wave-wrapper.sunny .wave-one{
+  background-color: rgba(255, 203, 59, 0.8)
+}
+.wrapper .wave-wrapper.sunny .wave-two{
+  background-color: rgba(255, 203, 59, 0.5)
+}
+.wrapper .wave-wrapper.sunny .wave-three{
+  background-color: rgba(255, 203, 59, 0.3)
+}
 
 .wrapper .skycon-wrapper {
   /* background-color: palegreen; */
@@ -213,7 +223,9 @@ a {
   line-height: 225px;
   font-size: 35px;
   font-weight: bold;
-  color: rgba(66, 102, 233, 0.6);
+  opacity: .9;
+  color: #ffd154;
+  /* color: rgba(66, 102, 233, 0.6); */
 }
 
 .wrapper .skycon-wrapper .skycon-icon {
@@ -222,6 +234,7 @@ a {
   top: 50%;
   z-index: 0;
   transform: translate(0, -50%);
+  opacity: .7;
 }
 
 .wrapper .skycon-wrapper .skycon-icon {
@@ -339,7 +352,7 @@ a {
   font-size: 45px;
 }
 
-.wrapper .celsius-range-wrapper .weekday {
+.wrapper .celsius-range-wrapper .next-weekday {
   padding: 0 15px;
   font-size: 22px;
 }

@@ -47,6 +47,21 @@ var util = {
       document.head.appendChild(script);
       document.head.removeChild(script);
     }
+  },
+  genDate(){
+    var locale = {
+      // dayNames: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday],
+      shortDayNames: ['Sun.', 'Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.', 'Sat.'],
+      // monthNames: [January, February, March, April, May, June, July, August, September, October, November, December],
+      shortMonthNames: ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'],
+    }
+    var result = {};
+    var date = new Date();
+    result.day = date.getDate();
+    result.weekDay = locale.shortDayNames[date.getDay()];
+    result.month = locale.shortMonthNames[date.getMonth()];
+    result.nextWeekDay = locale.shortDayNames[date.getDay() + 1];
+    return result;
   }
 }
 
@@ -54,15 +69,7 @@ function locationOnSuccess(data) {
   if (data.status === 0) {
     var content = data.content.address_detail;
     var city = content.city.slice(0, -1) + ',' + content.province.slice(0, -1);
-    console.log(city)
     tool.getWeather(city)
-    
-    
-    
-    
-    
-    // 开始updateWeather
-    // updateWeather.init(city);
   } else {
     console.log('获取城市失败')
   }
@@ -259,34 +266,198 @@ var updateWeather = {
   oldData: null,
   originData: null,
   newData: {},
+
+  searchInputDOM: document.getElementById('search-ipt'),
+  skyconDOM: document.getElementById('skycon'),
+  celsiusDOM: document.getElementById('celsius'),
+  aqiDOM: document.getElementById('aqi'),
+  lifestyleDOM: document.getElementById('other'),
+  tmpMinDOM: document.getElementById('min'),
+  tmpMaxDOM: document.getElementById('max'),
+  dateDOM: document.getElementById('date'),
+  nextWeekDayDOM: document.getElementById('next-weekday'),
+  weatherIconDOM: document.getElementById('weather-icon').querySelector('use'),
+  waveWrapperDOM: document.getElementById('wave-wrapper'),
+
   // 首次刷新初始化页面
   // 由locationOnSuccess（jsonp的callback）调用
   init(data){
     if(!this.oldData){
       this.originData = data;
       this.extractWeather();
+      this.date = util.genDate();
       this.update();
-    }
+    } 
   },
   extractWeather(){
     window.a = this.originData.weather
     var weather = JSON.parse(this.originData.weather)["HeWeather6"][0];
     var air = JSON.parse(this.originData.air)["HeWeather6"][0];
-    
+    window.b = this;
     // 天气参数
-    this.location = weather.basic.location;
-    this.cond_code_now = weather.now.cond_txt;
+    this.address = weather.basic.location;
+    this.cond_txt_now = weather.now.cond_txt;
+    
+    // 天气代码
+    this.cond_code_now = Number(weather.now.cond_code);
     this.tmp_now = weather.now.tmp;
-    this.min_tmp = weather.daily_forecast.tmp_min;
-    this.max_tmp = weather.daily_forecast.tmp_max;
+    this.min_tmp = weather.daily_forecast[1].tmp_min;
+    this.max_tmp = weather.daily_forecast[1].tmp_max;
     this.comf = weather.lifestyle[0].brf;
     this.aqi = air.air_now_city.aqi;
   },
   update(){
-    this.searchInputDOM = document.getElementById('search-ipt');
-    this.celsiusDOM = document.getElementById('celsius');
-    this.skyconDOM = document.getElementById('skycon');
-    this.aqi = document.getElementById('aqi')
+    this.searchInputDOM.value = this.address;
+    this.skyconDOM.innerText = this.cond_txt_now;
+    this.celsiusDOM.innerText = this.tmp_now;
+    this.aqiDOM.innerText = this.aqi;
+    this.lifestyleDOM.innerText = this.comf;
+    this.tmpMinDOM.innerText = this.min_tmp;
+    this.tmpMaxDOM.innerText = this.max_tmp;
+
+    this.dateDOM.innerText = this.date.weekDay + this.date.day + ' ' + this.date.month
+    this.nextWeekDayDOM.innerText = this.date.nextWeekDay;
     
+    
+    // 更新天气图标
+    updateIcon.call(this, this.cond_code_now, this.weatherIconDOM)
+    function updateIcon(index, target) {
+      var iconDict = {
+        sunny: 'icon-qingtianbaitian',
+        overcast: 'icon-yintian',
+        partlyCloudy: 'icon-qingzhuanduoyunbaitian',
+        ligthRain: 'icon-xiaoyu',
+        moderateRain: 'icon-zhongyu',
+        heavyRain: 'icon-dayu',
+        storm: 'icon-baoyu',
+        thundershower: 'icon-leizhenyu',
+        freezingRain: 'icon-dongyu',
+        lightSnow: 'icon-xiaoxue',
+        moderateSnow: 'icon-zhongxue',
+        heavySnow: 'icon-daxue',
+        sleet: 'icon-yujiaxue',
+        snowStorm: 'icon-baoxue',
+        foggy: 'icon-wu',
+        haze: 'icon-wumai',
+        dust: 'icon-yangchen',
+        duststorm: 'icon-shachen',
+        wind: 'icon-feng',
+        tornado: 'icon-longjuanfeng',
+        hail: 'icon-bingbao',
+        unknown: 'icon-rila'
+      };
+      this.waveWrapperDOM.classList.remove('sunny');
+      switch (index) {
+        case 100:
+        case 102:
+        case 200:
+        case 201:
+        case 202:
+        case 203:
+        case 204:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.sunny);
+          this.skyconDOM.style.color = 'rgba(66, 102, 233, 0.6)';
+          this.waveWrapperDOM.classList.add('sunny');
+          break;
+        case 101:
+        case 103:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.partlyCloudy)
+          break;
+        case 104:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.overcast);
+          break;
+        case 205:
+        case 206:
+        case 207:
+        case 208:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.wind);
+          break;
+        case 209:
+        case 210:
+        case 211:
+        case 212:
+        case 213:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.tornado);
+          break;
+        case 300:
+        case 306:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.moderateRain);
+          break;
+        case 301:
+        case 307:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.heavyRain);
+          break;
+        case 302:
+        case 303:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.thundershower);
+          break;
+        case 304:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.hail);
+          break;
+        case 305:
+        case 309:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.ligthRain);
+          break;
+        case 308:
+        case 310:
+        case 311:
+        case 312:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.storm);
+          break;
+        case 313:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.freezingRain);
+          break;
+        case 400:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.lightSnow);
+          break;
+        case 401:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.moderateSnow);
+          break;
+        case 402:
+        case 407:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.heavySnow);
+          break;
+        case 403:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.snowStorm);
+          break;
+        case 404:
+        case 405:
+        case 406:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.sleet);
+          break;
+        case 500:
+        case 501:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.foggy);
+          break;
+        case 502:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.haze);
+          break;
+        case 503:
+        case 504:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.dust);
+          break;
+        case 507:
+        case 508:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.duststorm);
+          break;
+        case 999:
+        default:
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.unknown);
+          console.log('unkown weather')
+      }
+    }
   }
 }
+
+function Search(ele) {
+  this.ele = ele;
+  console.log(this.ele.value)
+
+  this.init();
+}
+Search.prototype = {
+  init: function(){
+    this.ele.addEventListener('')
+  }
+}
+new Search(document.getElementById('search-ipt'))
