@@ -5,8 +5,112 @@
 var util = {
   trimUnit: function (ele, attr) {
     return parseFloat(getComputedStyle(ele)[attr])
+  },
+  /*
+   * para为对象
+   * para.method  三种类型 => 'GET','POST','JSONP'
+   * para.query   为对象，用于拼接url
+   * 
+   */
+  request: function (para) {
+    var method = para.method || 'GET';
+    var url = para.url;
+    if (typeof para.query === 'object') {
+      for (key in para.query) {
+        if (para.query.hasOwnProperty(key) && para.query[key]) {
+          url += key + '=' + para.query[key] + '&';
+        }
+      }
+      url = url.slice(0, -1);
+    }
+
+    if (method.toUpperCase() === 'GET' || method.toUpperCase === 'POST') {
+      return new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        xhr.send();
+        xhr.onload = function () {
+          if (xhr.status === 200 || xhr.status === 304) {
+            resolve(xhr.responseText)
+          } else {
+            reject(new Error(xhr.statusText));
+          }
+        }
+
+        xhr.onerror = function () {
+          reject(new Error('Ajax error'))
+        }
+      })
+    } else if (method.toUpperCase() === 'JSONP') {
+      var script = document.createElement('script');
+      script.src = url + '&callback=locationOnSuccess';
+      document.head.appendChild(script);
+      document.head.removeChild(script);
+    }
   }
 }
+
+function locationOnSuccess(data) {
+  if (data.status === 0) {
+    var content = data.content.address_detail;
+    var city = content.city.slice(0, -1) + ',' + content.province.slice(0, -1);
+    console.log(city)
+    tool.getWeather(city)
+    
+    
+    
+    
+    
+    // 开始updateWeather
+    // updateWeather.init(city);
+  } else {
+    console.log('获取城市失败')
+  }
+}
+
+var tool = {
+  getLoaction: function () {
+    util.request({
+      method: 'jsonp',
+      url: '//api.map.baidu.com/location/ip?',
+      query: {
+        ak: 'qhWvmiK2mMqkB88onRbGCfsc4n1oo4iO'
+      }
+    })
+  },
+  getWeather: function (city) {
+    var data = {};
+    util.request({
+      url: 'https://free-api.heweather.com/s6/weather?',
+      query: {
+        location: city,
+        key: '4a4cd82062fd4f8db1a9d7894e1aea92'
+      }
+    })
+    .then(weather => {
+      data.weather = weather;
+      return util.request({
+        url: 'https://free-api.heweather.com/s6/air?',
+        query: {
+          location: city,
+          key: '4a4cd82062fd4f8db1a9d7894e1aea92'
+        }
+      })
+    })
+    .then(air => {
+      data.air = air
+      updateWeather.init(data)
+    })
+  },
+  saveToLocal(oldData) {
+
+  },
+  loadFromLocal(){
+
+  }
+}
+
+tool.getLoaction();
 
 /**
  * 输入框宽度随字符长度变化
@@ -80,7 +184,6 @@ function Dropdown(ele, arr) {
 
   this.init();
 }
-
 Dropdown.prototype = {
   init: function () {
     this.genDOM();
@@ -107,7 +210,6 @@ Dropdown.prototype = {
   }
 }
 
-
 /* drop-btn 绑定事件*/
 function DropBtn(ele) {
   this.ele = ele;
@@ -130,18 +232,61 @@ DropBtn.prototype = {
         window.addEventListener('click', handler, false)
       } else {
         console.log(2)
-        _this.dropdown.domEle.parentNode.removeChild(_this.dropdown.domEle);
         window.removeEventListener('click', handler, false)
-        _this.dropdown = null;
+        setTimeout(function () {
+          _this.dropdown.domEle.parentNode.removeChild(_this.dropdown.domEle);
+          console.log(4)
+          _this.dropdown = null;
+        })
       }
 
       function _bodyEvent() {
         console.log(3)
-        this.dropdown.domEle.parentNode.removeChild(this.dropdown.domEle);
-        this.dropdown = null;
+        if (this.dropdown) {
+          this.dropdown.domEle.parentNode.removeChild(this.dropdown.domEle);
+          this.dropdown = null;
+        }
         window.removeEventListener('click', handler, false)
       }
     })
   }
 }
 new DropBtn(document.getElementById('drop-btn'))
+
+
+var updateWeather = {
+  // 保存上次查询结果
+  oldData: null,
+  originData: null,
+  newData: {},
+  // 首次刷新初始化页面
+  // 由locationOnSuccess（jsonp的callback）调用
+  init(data){
+    if(!this.oldData){
+      this.originData = data;
+      this.extractWeather();
+      this.update();
+    }
+  },
+  extractWeather(){
+    window.a = this.originData.weather
+    var weather = JSON.parse(this.originData.weather)["HeWeather6"][0];
+    var air = JSON.parse(this.originData.air)["HeWeather6"][0];
+    
+    // 天气参数
+    this.location = weather.basic.location;
+    this.cond_code_now = weather.now.cond_txt;
+    this.tmp_now = weather.now.tmp;
+    this.min_tmp = weather.daily_forecast.tmp_min;
+    this.max_tmp = weather.daily_forecast.tmp_max;
+    this.comf = weather.lifestyle[0].brf;
+    this.aqi = air.air_now_city.aqi;
+  },
+  update(){
+    this.searchInputDOM = document.getElementById('search-ipt');
+    this.celsiusDOM = document.getElementById('celsius');
+    this.skyconDOM = document.getElementById('skycon');
+    this.aqi = document.getElementById('aqi')
+    
+  }
+}
