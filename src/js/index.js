@@ -94,15 +94,54 @@ Dropdown.prototype = {
     this.arr.forEach(value => {
       if (typeof value === 'string') {
         var li = document.createElement('li');
-        li.innerText = value.toUpperCase();
+        var a = document.createElement('a');
+        a.innerText = value.toUpperCase();
+        li.appendChild(a);
         fragment.appendChild(li);
       }
     })
     this.domEle.appendChild(fragment);
   },
   positionDOM: function () {
-    this.ct.appendChild(this.domEle);
+    this.ele.appendChild(this.domEle);
   }
 }
 
-// new Dropdown(document.getElementById('search-wrapper'), document.getElementById('drop-btn'), ['BEIJING', 'LISBON', 'DENVER'])
+
+/* drop-btn 绑定事件*/
+function DropBtn(ele) {
+  this.ele = ele;
+
+  // 生成的dropdown
+  this.dropdown = null;
+  this.bind();
+}
+DropBtn.prototype = {
+  bind() {
+    var _this = this;
+    this.ele.addEventListener('click', function (e) {
+      var handler = _bodyEvent.bind(_this)
+
+      e.preventDefault();
+      e.stopPropagation();
+      if (!_this.dropdown) {
+        console.log(1);
+        _this.dropdown = new Dropdown(document.getElementById('drop-btn'), ['BEIJING', 'LISBON', 'DENVER']);
+        window.addEventListener('click', handler, false)
+      } else {
+        console.log(2)
+        _this.dropdown.domEle.parentNode.removeChild(_this.dropdown.domEle);
+        window.removeEventListener('click', handler, false)
+        _this.dropdown = null;
+      }
+
+      function _bodyEvent() {
+        console.log(3)
+        this.dropdown.domEle.parentNode.removeChild(this.dropdown.domEle);
+        this.dropdown = null;
+        window.removeEventListener('click', handler, false)
+      }
+    })
+  }
+}
+new DropBtn(document.getElementById('drop-btn'))
