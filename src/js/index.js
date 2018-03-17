@@ -115,6 +115,20 @@ var util = {
     setTimeout(function(){
       ele.parentNode.removeChild(ele);
     },500)
+  },
+  fadeIn(ele, parent) {
+    if(!ele) return;
+    ele.style.opacity = 0;
+    parent.appendChild(ele);
+    setTimeout(function(){ele.style.opacity = 1})
+  },
+  parentUntil(ele, tagName) {
+    if(!ele.parentNode.tagName) return;
+    if(ele.parentNode.tagName.toLowerCase() === tagName) {
+      return ele.parentNode;
+    } else {
+      return util.parentUntil(ele.parentNode, tagName);
+    }
   }
 }
 
@@ -571,15 +585,12 @@ Search.prototype = {
     })
 
     var t1 = function (e) {
-      // if(e.target !== this.ele && e.target !== document.querySelector('.dropdown')) {
         console.log(e.target)
         _this.value = _this.originCity;
         fitWidth.setWidth();
         
-
         // 不再显示搜索历史
         util.fadeOut(document.querySelector('.dropdown'))
-      // }
     }.bind(this);
     window.addEventListener('click', t1)
   },
@@ -622,11 +633,8 @@ Search.prototype = {
     }
 
     this.domEle.appendChild(fragment);
-    this.domEle.style.opacity = 0;
-    this.ele.parentNode.appendChild(this.domEle);
-    setTimeout(() => {
-      this.domEle.style.opacity = 1;
-    })
+    
+    util.fadeIn(this.domEle, this.ele.parentNode)
 
     this.bindDropdown();
   },
@@ -718,7 +726,7 @@ var searchHistory = new Search(document.getElementById('search-ipt'))
 /* drop-btn 绑定事件*/
 function DropBtn(ele) {
   this.ele = ele;
-
+  this.dropBtn = document.querySelector('.btn');
   // 生成的dropdown
   this.dropdown = null;
 
@@ -728,37 +736,29 @@ DropBtn.prototype = {
   bind() {
     var _this = this;
 
-    this.ele.addEventListener('click', function (e) {
+    this.dropBtn.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
-
       // 如果还未生成dropdown
       if (!document.querySelector('.mark-dropdown')) {
+        
         // 去掉可能存在的搜索记录dropdown
         util.fadeOut(document.querySelector('.dropdown'))
 
         _this.cityMarked = util.loadFromLocal('__cityMarked__');
         _this.dropdown = new Dropdown(_this.ele, _this.cityMarked, 3);
-        _this.dropdown.domEle.style.opacity = 0;
-        this.appendChild(_this.dropdown.domEle);
-        setTimeout(function(){_this.dropdown.domEle.style.opacity = 1})
+
+        util.fadeIn(_this.dropdown.domEle, _this.ele)
       } else {
-        console.log(_this.dropdown)
-        _this.dropdown = document.querySelector('.mark-dropdown');
-        _this.dropdown.parentNode.removeChild(_this.dropdown);
+        util.fadeOut(document.querySelector('.mark-dropdown'))
       }
     })
 
+
     var t2 = function() {
       // 不再显示收藏
-      var dropdown = document.querySelector('.mark-dropdown');
-      if(dropdown) {
-        dropdown.style.opacity = 0;
-        setTimeout(()=>{
-          dropdown.parentNode.removeChild(dropdown);
-        },500)
-      }
-    }.bind(this)
+      util.fadeOut(document.querySelector('.mark-dropdown'))
+    }
 
     window.addEventListener('click', t2)
   }
@@ -824,18 +824,19 @@ Dropdown.prototype = {
         fragment.appendChild(li);
       }
       this.domEle.appendChild(fragment);
+      this.bind()
     }
   },
   bind: function() {
       var _this = this;
 
       this.domEle.addEventListener('click', function(e) {
+        // console.log(1)
         // 防止window捕获
         e.stopPropagation();
-
         var tagName = e.target.tagName.toLowerCase();
         if(tagName !== 'ul' && tagName !== 'li') {
-          
+
           // 获取到点击元素所在li元素的index
           var index = [].indexOf.call(this.children, parentUntil(e.target, 'li'));
           var ele = this.children[index];
@@ -846,8 +847,8 @@ Dropdown.prototype = {
           var closeIcon = ele.querySelector('.delete');
           
           // 只有删除按钮
-          if(this.type === 3) {
-            console.log('type === 3');
+          if(_this.type === 3) {
+            // console.log('type === 3');
             if(tagName === 'a') {
               tool.getWeather(cityLink.innerText);
             } else if(e.target.classList.contains('delete') || parentUntil(e.target, 'span').classList.contains('delete')) {
@@ -868,17 +869,18 @@ Dropdown.prototype = {
   },
   deleteDropdownItem: function(index){
     var length = this.domEle.children.length;
-    if(length > 1) {
-      this.domEle.removeChild(this.domEle.children[index]);
-    } else {
-      this.domEle.removeChild(this.domEle.children[index]);
-      var li = document.createElement('li');
 
-      // 只有删除按钮
-      if(this.type === 3) {
+    if(this.type === 3) {
+      if(length > 1) {
+        this.domEle.removeChild(this.domEle.children[index]);
+      } else {
+        this.domEle.removeChild(this.domEle.children[index]);
+        var li = document.createElement('li');
+  
+        // 只有删除按钮
         li.innerHTML = `<p class="no-history">no bookmark</p>`;
+        this.domEle.appendChild(li)
       }
-      this.domEle.appendChild(li)
     }
   }
 }
