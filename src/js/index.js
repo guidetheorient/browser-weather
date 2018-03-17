@@ -585,7 +585,7 @@ Search.prototype = {
     })
 
     var t1 = function (e) {
-        console.log(e.target)
+        // console.log(e.target)
         _this.value = _this.originCity;
         fitWidth.setWidth();
         
