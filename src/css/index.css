@@ -35,6 +35,7 @@ a {
   position: absolute;
   left: 50%;
   top: 50%;
+  overflow: hidden;
   transform: translate(-50%, -50%);
   padding: 65px 0 55px 75px;
   width: 960px;
@@ -44,8 +45,6 @@ a {
   border: 1px solid #c7dbf9;
 }
 
-.wrapper .header {}
-
 .wrapper .header .search-ipt {
   width: 165px;
   background: none;
@@ -53,14 +52,23 @@ a {
   border: none;
   font-family: Cuprum, sans-serif;
   font-size: 40px;
+  line-height: normal;
   font-weight: bold;
   color: #ffd154;
   vertical-align: middle;
+  transition: width .5s;
+}
+.wrapper .header .search-ipt::-webkit-input-placeholder{
+  font-size: 30px;
 }
 
 /*此处css为js所用，务必与.search-ipt一致*/
 
 .wrapper .header .invisible-span {
+  position: absolute;
+  top: 0;
+  max-width: 300px;
+  word-break: break-alll;
   font-family: Cuprum, sans-serif;
   font-size: 40px;
   font-weight: bold;
@@ -86,48 +94,210 @@ a {
   color: #8197ed;
 }
 
+/* search history dropdown*/
 
-/*dropdown*/
-.wrapper .header .drop-btn .dropdown {
+.wrapper .header {
+  position: relative;
+}
+
+.wrapper .header .dropdown {
   position: absolute;
   z-index: 10;
   top: 100%;
-  right: 0;
+  left: 0;
+  width: 160px;
   padding: 10px 0;
   border: 1px solid #c7dbf9;
   background-color: #fefefe;
   box-shadow: 0 0 8px 0 #c7dbf9;
   border-radius: 4px;
+  transition: all .4s linear;
 }
 
-.wrapper .header .drop-btn .dropdown li {
+.wrapper .header .dropdown.hide {
+  opacity: 0;
+  display: none;
+}
+
+.wrapper .header .dropdown li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-family: Cuprum, sans-serif;
+  transition: all .5s;
 }
 
-.wrapper .header .drop-btn .dropdown li a {
-  display: block;
-  padding: 14px 10px;
-  height: 100%;
-  line-height: 1.5;
-  font-size: 20px;
-  color: #8197ed;
+.wrapper .header .dropdown li:hover {
+  background-color: rgba(255, 220, 104, .2);
 }
 
-.wrapper .header .drop-btn .dropdown li:last-child {
-  text-align: center;
-}
-
-.wrapper .header .drop-btn .dropdown li a:hover {
+.wrapper .header .dropdown li:active {
   background-color: rgba(255, 220, 104, .5);
 }
 
-.wrapper .header .drop-btn .dropdown li a:active {
-  background-color: rgba(255, 220, 104, .8);
+.wrapper .header .dropdown li a {
+  padding: 14px 0 14px 13px;
+  width: 70px;
+  overflow: hidden;
+  line-height: 1.5;
+  font-size: 20px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #8197ed;
+  opacity: .5;
+  transition: all .5s;
+}
+
+.wrapper .header .dropdown li .no-history {
+  padding: 14px 0;
+  width: 100%;
+  line-height: 1.5;
+  font-size: 20px;
+  text-align: center;
+  text-transform: uppercase;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #8197ed;
+  opacity: .5;
+  transition: all .5s;
+}
+
+.wrapper .header .dropdown li a:hover {
+  text-indent: 0.2em;
+  opacity: .8;
+}
+
+.wrapper .header .dropdown li a:active {
+  opacity: 1;
+}
+
+.wrapper .header .dropdown li .btns {
+  font-size: 16px;
+}
+
+.wrapper .header .dropdown li .btns span {
+  padding: 14px 5px;
+  margin: 5px 5px;
+  cursor: pointer;
+  color: #8197ed;
+  opacity: .4;
+  transition: all .5s;
+}
+
+.wrapper .header .dropdown li .btns span:hover {
+  opacity: .7;
+}
+
+.wrapper .header .dropdown li .btns .mark:active {
+  color: #fdc018;
+  opacity: .8;
+}
+
+.wrapper .header .dropdown li .btns .mark.active {
+  color: #fdc018;
+  opacity: .8;
+}
+
+.wrapper .header .dropdown li .btns .delete.active {
+  opacity: .9;
 }
 
 
+/*mark dropdown*/
+
+.wrapper .header .mark-dropdown {
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  left: 0;
+  width: 160px;
+  padding: 10px 0;
+  border: 1px solid #c7dbf9;
+  background-color: #fefefe;
+  box-shadow: 0 0 8px 0 #c7dbf9;
+  border-radius: 4px;
+  transition: all .4s linear;
+}
+
+.wrapper .header .mark-dropdown li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: Cuprum, sans-serif;
+  transition: all .5s;
+}
+.wrapper .header .mark-dropdown li .no-mark {
+  padding: 14px 0;
+  width: 100%;
+  line-height: 1.5;
+  font-size: 20px;
+  text-align: center;
+  text-transform: uppercase;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #8197ed;
+  opacity: .5;
+  transition: all .5s;
+  cursor: default;
+}
+
+.wrapper .header .mark-dropdown li:hover {
+  background-color: rgba(255, 220, 104, .2);
+}
+
+.wrapper .header .mark-dropdown li:active {
+  background-color: rgba(255, 220, 104, .5);
+}
+
+.wrapper .header .mark-dropdown li a {
+  padding: 14px 0 14px 13px;
+  width: 70px;
+  overflow: hidden;
+  line-height: 1.5;
+  font-size: 20px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #8197ed;
+  opacity: .5;
+  transition: all .5s;
+}
+
+.wrapper .header .mark-dropdown li a:hover {
+  text-indent: 0.2em;
+  opacity: .8;
+}
+
+.wrapper .header .mark-dropdown li a:active {
+  opacity: 1;
+}
+
+.wrapper .header .mark-dropdown li .btns {
+  font-size: 16px;
+}
+.wrapper .header .mark-dropdown li .btns span {
+  padding: 14px 5px;
+  margin: 5px 5px;
+  cursor: pointer;
+  color: #8197ed;
+  opacity: .4;
+  transition: all .5s;
+}
+
+.wrapper .header .mark-dropdown li .btns span:hover {
+  opacity: .7;
+}
+
+.wrapper .header .mark-dropdown li .btns .delete.active {
+  opacity: .9;
+}
+
 /*wave-wrapper*/
-.wrapper .wave-wrapper{
+
+.wrapper .wave-wrapper {
   /* display: none; */
   position: absolute;
   right: -1px;
@@ -139,13 +309,15 @@ a {
   transform: translate3d(0, 0, 0);
   background-color: transparent;
 }
-.wrapper .wave-wrapper .wave{
+
+.wrapper .wave-wrapper .wave {
   position: absolute;
   top: 0;
   right: 0;
   background-color: rgba(204, 222, 251, 0.6);
 }
-.wrapper .wave-wrapper .wave-one{
+
+.wrapper .wave-wrapper .wave-one {
   width: 340px;
   height: 340px;
   margin-right: -160px;
@@ -155,7 +327,8 @@ a {
   transform-origin: 55% 50%;
   animation: wave 5s infinite linear;
 }
-.wrapper .wave-wrapper .wave-two{
+
+.wrapper .wave-wrapper .wave-two {
   width: 450px;
   height: 450px;
   margin-right: -220px;
@@ -163,9 +336,10 @@ a {
   border-radius: 60% 50% 70% 50% / 50% 60% 50% 70%;
   background-color: rgba(204, 222, 251, 0.5);
   transform-origin: 50% 50%;
-  animation: wave 4s infinite linear;
+  animation: wave 5s infinite linear;
 }
-.wrapper .wave-wrapper .wave-three{
+
+.wrapper .wave-wrapper .wave-three {
   width: 580px;
   height: 580px;
   margin-right: -290px;
@@ -175,7 +349,8 @@ a {
   transform-origin: 48% 48%;
   animation: wave 5s infinite linear;
 }
-@keyframes wave{
+
+@keyframes wave {
   from {
     transform: rotate(0deg);
   }
@@ -185,22 +360,24 @@ a {
 }
 
 /*js 切换颜色*/
-.wrapper .wave-wrapper.sunny .wave-one{
+
+.wrapper .wave-wrapper.sunny .wave-one {
   background-color: rgba(255, 203, 59, 0.8)
 }
-.wrapper .wave-wrapper.sunny .wave-two{
+
+.wrapper .wave-wrapper.sunny .wave-two {
   background-color: rgba(255, 203, 59, 0.5)
 }
-.wrapper .wave-wrapper.sunny .wave-three{
+
+.wrapper .wave-wrapper.sunny .wave-three {
   background-color: rgba(255, 203, 59, 0.3)
 }
 
 .wrapper .skycon-wrapper {
-  /* background-color: palegreen; */
   margin-top: 64px;
   position: relative;
   height: 225px;
-  width: 120px;
+  width: 200px;
   font-size: 120px;
 }
 
@@ -216,13 +393,14 @@ a {
 }
 
 .wrapper .skycon-wrapper .skycon {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
+  width: 100%;
   line-height: 225px;
   font-size: 35px;
   font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   opacity: .9;
   color: #ffd154;
   /* color: rgba(66, 102, 233, 0.6); */
@@ -230,10 +408,10 @@ a {
 
 .wrapper .skycon-wrapper .skycon-icon {
   position: absolute;
-  left: 0;
+  left: 50%;
   top: 50%;
-  z-index: 0;
-  transform: translate(0, -50%);
+  z-index: -2;
+  transform: translate(-50%, -50%);
   opacity: .7;
 }
 
