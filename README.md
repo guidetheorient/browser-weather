@@ -2,22 +2,18 @@
 
 A pretty weather web page built with origin JS and CSS(No third library).
 
-Markdown 
-![Github file size](https://img.shields.io/github/size/webcaetano/craft/build/phaser-craft.min.js.svg?style=for-the-badge)
-
-
 #### finished
-[x] 输入框宽度随文字长短自动变化  
-[x] 首次加载数据更新  
-[x] 收藏和搜索记录下拉列表  
-[x] localStorage存取数据  
-[x] 水波动画  
+- [x] 输入框宽度随文字长短自动变化  
+- [x] 首次加载数据更新  
+- [x] 收藏和搜索记录下拉列表  
+- [x] localStorage存取数据  
+- [x] 水波动画  
 
 #### todo
-[ ] 搜索城市提示  
-[ ] 模块进一步分离  
-[ ] ajax和jsonp整合
-[ ] 首屏加载数据更新效果优化
+- [ ] 搜索城市提示  
+- [ ] 模块进一步分离  
+- [ ] ajax和jsonp整合
+- [ ] 首屏加载数据更新效果优化
 
 
 #### 本以为非常小的项目，涉及的知识点和问题却很多
