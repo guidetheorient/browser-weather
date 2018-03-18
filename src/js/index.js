@@ -129,6 +129,17 @@ var util = {
     } else {
       return util.parentUntil(ele.parentNode, tagName);
     }
+  },
+  textChangeAnimate(ele, text){
+    ele.classList.remove('text-in');
+    ele.classList.add('text-out');
+    ele.addEventListener('animationend', function(e){
+      this.classList.remove('text-out');
+      if(e.target === e.currentTarget) {
+        this.innerText = text;
+        this.classList.add('text-in');
+      }
+    })
   }
 }
 
@@ -136,7 +147,7 @@ function locationOnSuccess(localData) {
   if (localData.status === 0) {
     var content = localData.content.address_detail;
     var city = content.city.slice(0, -1) + ',' + content.province.slice(0, -1);
-    tool.getWeather(city)
+    tool.getWeather(city, true)
   } else {
     console.log('获取城市失败')
   }
@@ -153,6 +164,10 @@ var tool = {
     })
   },
   getWeather: function (city) {
+    // 判定是用户搜索还是定位获得
+    if(arguments.length !== 1) {
+      var type = 'iplocated';
+    }
     var responseData = {};
     util.request({
       url: 'https://free-api.heweather.com/s6/weather?',
@@ -176,7 +191,8 @@ var tool = {
     .catch(error => {console.log(error,'请求失败2')})
     .then(air => {
       responseData.air = air
-      updateWeather.init(responseData);
+      // console.log(type)
+      updateWeather.init(responseData, type);
     })
   }
 }
@@ -259,9 +275,6 @@ var fitWidth = new FitWidth(document.getElementById('search-ipt'))
 
 
 
-
-
-
 /**
  * 1. 首次加载时，查询localStoage
  *      |有数据 => 更新至localStorage
@@ -331,13 +344,19 @@ var updateWeather = {
   },
   // 首次刷新初始化页面
   // 由locationOnSuccess（jsonp的callback）调用
-  init(responseText){
+  init(responseText, type){
+    // 参数type可选
+    // if(true) => iplocated 不更新至搜索历史
+    // if(false) => 更新进搜索历史
+    this.type = type;
+    
     // 获取处理过的数据
     // 获取responseText或localStorage中数据
     this.getData(responseText);
 
     // 更新DOM
-    var status = this.update();
+    this.update();
+    // var status = this.update();
 
     // 保存数据
     if(responseText) {
@@ -359,9 +378,9 @@ var updateWeather = {
       // util.saveToLocal(this.address, '__citySearched__')
     }
 
-    if(status) {
-      return true
-    }
+    // if(status) {
+    //   return true
+    // }
   },
   extractWeather(){
     var weather = JSON.parse(this.originData.weather)["HeWeather6"][0];
@@ -385,30 +404,53 @@ var updateWeather = {
     this.searchInputDOM.setAttribute('value', this.address);
     this.searchInputDOM.value =  this.address;
     
-    this.skyconDOM.innerText = this.cond_txt_now;
+    // 现在天气状况
+    util.textChangeAnimate(this.skyconDOM, this.cond_txt_now);
 
     if(this.cond_txt_now.length >= 4) {
       this.skyconDOM.setAttribute('title', this.cond_txt_now);
     }
+
+    // 现在温度
+    util.textChangeAnimate(this.celsiusDOM, this.tmp_now);
     
-    this.celsiusDOM.innerText = this.tmp_now;
-    this.aqiDOM.innerText = this.aqi;
-    this.lifestyleDOM.innerText = this.comf;
-    this.tmpMinDOM.innerText = this.min_tmp;
-    this.tmpMaxDOM.innerText = this.max_tmp;
+    // aqi
+    util.textChangeAnimate(this.aqiDOM, this.aqi);
+    // 生活指数
+    util.textChangeAnimate(this.lifestyleDOM, this.comf);
+    // 明天最低气温
+    util.textChangeAnimate(this.tmpMinDOM, this.min_tmp);
+    // 明天最高气温
+    util.textChangeAnimate(this.tmpMaxDOM, this.max_tmp);
 
     this.dateToday = this.date.weekDay + this.date.day + ' ' + this.date.month;
     this.nextWeekDay = this.date.nextWeekDay;
+    
+    // 今天日期
+    util.textChangeAnimate(this.dateDOM, this.dateToday);
+    // 明天日期
+    util.textChangeAnimate(this.nextWeekDayDOM, this.nextWeekDay);
+    
+    // this.aqiDOM.innerText = this.aqi;
+    // this.lifestyleDOM.innerText = this.comf;
+    // this.tmpMinDOM.innerText = this.min_tmp;
+    // this.tmpMaxDOM.innerText = this.max_tmp;
 
-    this.dateDOM.innerText = this.dateToday;
-    this.nextWeekDayDOM.innerText = this.nextWeekDay;
+    // this.dateToday = this.date.weekDay + this.date.day + ' ' + this.date.month;
+    // this.nextWeekDay = this.date.nextWeekDay;
+
+    // this.dateDOM.innerText = this.dateToday;
+    // this.nextWeekDayDOM.innerText = this.nextWeekDay;
     
     
     // 更新天气图标
     updateIcon.call(this, this.cond_code_now, this.weatherIconDOM)
 
     // 更新搜索历史
-    searchHistory.updateDropdown(this.address)
+    // 如果是用户搜索
+    if(!this.type) {
+      searchHistory.updateDropdown(this.address)
+    }
 
     function updateIcon(index, target) {
       var iconDict = {
@@ -569,7 +611,13 @@ Search.prototype = {
     })
     this.ele.addEventListener('focus', function(e){
       e.stopPropagation();
-      this.value = '';
+
+      this.addEventListener('transitionend', function(e) {
+        this.value = '';
+        this.style.opacity = 1;
+      })
+      this.style.opacity = 0;
+
       _this.originCity = this.value;
       
       if(!document.querySelector('.dropdowm')) {
@@ -878,9 +926,24 @@ Dropdown.prototype = {
         var li = document.createElement('li');
   
         // 只有删除按钮
-        li.innerHTML = `<p class="no-history">no bookmark</p>`;
+        li.innerHTML = `<p class="no-mark">no bookmark</p>`;
         this.domEle.appendChild(li)
       }
     }
   }
 }
+
+
+// 页面失去焦点时，去掉下拉菜单
+window.addEventListener('blur', function(){
+  Array.from(document.querySelectorAll('.dropdown')).map(ele => {
+    if(ele) {
+      util.fadeOut(ele)
+    }
+  })
+  Array.from(document.querySelectorAll('.mark-dropdown')).map(ele => {
+    if(ele) {
+      util.fadeOut(ele)
+    }
+  })
+})

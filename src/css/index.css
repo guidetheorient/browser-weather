@@ -3,6 +3,12 @@
 html,
 body {
   font-family: 'Ubuntu', 'Segoe UI', sans-serif;
+  height: 100%;
+  overflow: hidden;
+  /* background: -webkit-linear-gradient(45deg, #c7dbf9, #6C87E8) */
+  /* background: -webkit-linear-gradient(0deg, #E0EAFC, #E0EAFC); */
+  /* background-image: linear-gradient(to top, #accbee 0%, #e7f0fd 100%); */
+  background-image: linear-gradient(to top, #f3e7e9 0%, #e3eeff 99%, #e3eeff 100%);
 }
 
 * {
@@ -31,6 +37,21 @@ a {
 
 /*css specified*/
 
+/*body background*/
+
+.color-change {
+  animation: color-change 10s linear infinite alternate both
+}
+
+@keyframes color-change {
+  0% {
+    background: #f3e7e9;
+  }
+  100% {
+    background: #e3eeff;
+  }
+}
+
 .wrapper {
   position: absolute;
   left: 50%;
@@ -56,10 +77,12 @@ a {
   font-weight: bold;
   color: #ffd154;
   vertical-align: middle;
-  transition: width .5s;
+  transition: width,opacity .5s,.25s;
 }
-.wrapper .header .search-ipt::-webkit-input-placeholder{
+
+.wrapper .header .search-ipt::-webkit-input-placeholder {
   font-size: 30px;
+  color: #e3eeff;
 }
 
 /*此处css为js所用，务必与.search-ipt一致*/
@@ -82,7 +105,7 @@ a {
   vertical-align: middle;
 }
 
-.wrapper .header .drop-btn .btn{
+.wrapper .header .drop-btn .btn {
   height: 100%;
   display: inline-block;
   padding-left: 10px;
@@ -97,6 +120,7 @@ a {
   margin-top: 5px;
   font-size: 25px;
   color: #8197ed;
+  user-select: none;
 }
 
 /* search history dropdown*/
@@ -117,6 +141,21 @@ a {
   box-shadow: 0 0 8px 0 #c7dbf9;
   border-radius: 4px;
   transition: all .4s linear;
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-image: -webkit-linear-gradient(45deg, rgba(199, 219, 249, 0.8), rgba(108, 135, 232, 0.8));
+  background: rgba(163, 194, 241, .3);
+  opacity: .5;
+  border-radius: 10px;
 }
 
 .wrapper .header .dropdown.hide {
@@ -167,6 +206,7 @@ a {
   color: #8197ed;
   opacity: .5;
   transition: all .5s;
+  user-select: none;
 }
 
 .wrapper .header .dropdown li a:hover {
@@ -209,7 +249,6 @@ a {
   opacity: .9;
 }
 
-
 /*mark dropdown*/
 
 .wrapper .header .mark-dropdown {
@@ -224,6 +263,8 @@ a {
   box-shadow: 0 0 8px 0 #c7dbf9;
   border-radius: 4px;
   transition: all .4s linear;
+  max-height: 300px;
+  overflow-y: scroll;
 }
 
 .wrapper .header .mark-dropdown li {
@@ -233,6 +274,7 @@ a {
   font-family: Cuprum, sans-serif;
   transition: all .5s;
 }
+
 .wrapper .header .mark-dropdown li .no-mark {
   padding: 14px 0;
   width: 100%;
@@ -259,7 +301,7 @@ a {
 
 .wrapper .header .mark-dropdown li a {
   padding: 14px 0 14px 13px;
-  width: 70px;
+  width: 100px;
   overflow: hidden;
   line-height: 1.5;
   font-size: 20px;
@@ -283,6 +325,7 @@ a {
 .wrapper .header .mark-dropdown li .btns {
   font-size: 16px;
 }
+
 .wrapper .header .mark-dropdown li .btns span {
   padding: 14px 5px;
   margin: 5px 5px;
@@ -384,6 +427,7 @@ a {
   height: 225px;
   width: 200px;
   font-size: 120px;
+  user-select: none;
 }
 
 .wrapper .skycon-wrapper::before {
@@ -417,7 +461,7 @@ a {
   top: 50%;
   z-index: -2;
   transform: translate(-50%, -50%);
-  opacity: .7;
+  opacity: .25;
 }
 
 .wrapper .skycon-wrapper .skycon-icon {
@@ -429,6 +473,7 @@ a {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  user-select: none;
 }
 
 .wrapper .celsius {
@@ -460,6 +505,7 @@ a {
   font-size: 0;
   color: #8197ed;
   vertical-align: middle;
+  user-select: none;
 }
 
 .wrapper .aqi-wrapper .aqi-icon {
@@ -510,6 +556,7 @@ a {
   font-size: 0;
   font-family: Cuprum, sans-serif;
   color: #8197ed;
+  user-select: none;
 }
 
 .wrapper .celsius-range-wrapper .min,
@@ -545,4 +592,39 @@ a {
 .wrapper .celsius-range-wrapper a .arrow-right {
   font-size: 35px;
   fill: url(#grad1);
+}
+
+@keyframes text-in {
+  0% {
+    letter-spacing: -.5em;
+    opacity: 0
+  }
+  40% {
+    opacity: .6
+  }
+  100% {
+    transform: translateZ(0);
+    opacity: 1
+  }
+}
+
+@keyframes text-out {
+  0% {
+    opacity: 1
+  }
+  50% {
+    opacity: 1
+  }
+  100% {
+    letter-spacing: -.5em;
+    opacity: 0
+  }
+}
+
+.text-in {
+  animation: text-in .8s cubic-bezier(.215, .61, .355, 1.000) both
+}
+
+.text-out {
+  animation: text-out .7s linear both
 }

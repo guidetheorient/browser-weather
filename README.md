@@ -8,12 +8,12 @@ A pretty weather web page built with origin JS and CSS(No third library).
 - [x] 收藏和搜索记录下拉列表  
 - [x] localStorage存取数据  
 - [x] 水波动画  
+- [x] 首屏加载数据更新效果优化
 
 #### todo
 - [ ] 搜索城市提示  
 - [ ] 模块进一步分离  
 - [ ] ajax和jsonp整合
-- [ ] 首屏加载数据更新效果优化
 
 
 #### 本以为非常小的项目，涉及的知识点和问题却很多
@@ -32,4 +32,5 @@ A pretty weather web page built with origin JS and CSS(No third library).
 * Ajax，原生动画的简单，原生祖先元素封装  
 * switch..case..也终于找到了用武之地  
 * 事件代理，阻止冒泡的效用  
+* js修改innerText时触发动画效果
 * ...
