@@ -1,22 +1,97 @@
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(1);
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /**
  * ak: qhWvmiK2mMqkB88onRbGCfsc4n1oo4iO
  * created at 3/13'18 by guidetheorient 
  */
 
+__webpack_require__(2);
 
-require('../css/index.scss');
-
-const util = require('./tool/util');
+const util = __webpack_require__(3);
 
 window.locationOnSuccess = function locationOnSuccess(localData) {
   if (localData.status === 0) {
     var content = localData.content.address_detail;
     var city = content.city.slice(0, -1) + ',' + content.province.slice(0, -1);
-    tool.getWeather(city, true)
+    tool.getWeather(city, true);
   } else {
-    console.log('获取城市失败')
+    console.log('获取城市失败');
   }
-}
+};
 
 var tool = {
   getLoaction: function () {
@@ -26,11 +101,11 @@ var tool = {
       query: {
         ak: 'qhWvmiK2mMqkB88onRbGCfsc4n1oo4iO'
       }
-    })
+    });
   },
   getWeather: function (city) {
     // 判定是用户搜索还是定位获得
-    if(arguments.length !== 1) {
+    if (arguments.length !== 1) {
       var type = 'iplocated';
     }
     var responseData = {};
@@ -41,9 +116,9 @@ var tool = {
         // lang: 'en',
         key: '4a4cd82062fd4f8db1a9d7894e1aea92'
       }
-    })
-    .catch(error => {console.log(error,'请求失败1')})
-    .then(weather => {
+    }).catch(error => {
+      console.log(error, '请求失败1');
+    }).then(weather => {
       responseData.weather = weather;
       return util.request({
         url: 'https://free-api.heweather.com/s6/air?',
@@ -51,33 +126,32 @@ var tool = {
           location: city,
           key: '4a4cd82062fd4f8db1a9d7894e1aea92'
         }
-      })
-    })
-    .catch(error => {console.log(error,'请求失败2')})
-    .then(air => {
-      responseData.air = air
+      });
+    }).catch(error => {
+      console.log(error, '请求失败2');
+    }).then(air => {
+      responseData.air = air;
       updateWeather.init(responseData, type);
-    })
+    });
   }
-}
 
-/**
- * jsonp成功后调用locationOnSuccess， locationOnSuccess调用tool.getWeather为ajax请求，返回后 * 调用update.init()
- */
-tool.getLoaction();
+  /**
+   * jsonp成功后调用locationOnSuccess， locationOnSuccess调用tool.getWeather为ajax请求，返回后 * 调用update.init()
+   */
+};tool.getLoaction();
 
 /**
  * 输入框宽度随字符长度变化
  */
 class FitWidth {
-  constructor(ele){
+  constructor(ele) {
     this.ele = ele;
 
     this.parent = this.ele.parentNode;
     this.value = this.ele.value;
     this.fontSize = getComputedStyle(this.ele).fontSize;
     this.fontFamily = getComputedStyle(this.ele).fontFamily;
-    this.padding = util.trimUnit(this.ele, 'paddingLeft') + util.trimUnit(this.ele, 'paddingRight')
+    this.padding = util.trimUnit(this.ele, 'paddingLeft') + util.trimUnit(this.ele, 'paddingRight');
     // 限制最大宽度
     this.maxValueWidth = 300;
     // 限制最小宽度
@@ -86,7 +160,7 @@ class FitWidth {
     this.valueWidth = 0;
     // 隐藏元素
     this.span = null;
-  
+
     this.init();
     this.bind();
   }
@@ -115,30 +189,30 @@ class FitWidth {
   bind() {
     var _this = this;
 
-    var observer = new MutationObserver((e) =>{
+    var observer = new MutationObserver(e => {
       this.value = this.ele.value;
       this.setWidth();
-    })
+    });
 
     observer.observe(this.ele, {
       attributes: true,
       characterData: true,
       attributeFilter: ['value']
-    })
+    });
 
     this.ele.addEventListener('input', () => {
       this.value = this.ele.value;
       // this.ele.setAttribute('value', this.value);
       this.setWidth();
-    })
+    });
     this.ele.addEventListener('blur', () => {
       this.ele.value = this.value = this.ele.getAttribute('value');
       this.setWidth();
-    })
+    });
   }
 }
 
-var fitWidth = new FitWidth(document.getElementById('search-ipt'))
+var fitWidth = new FitWidth(document.getElementById('search-ipt'));
 
 /**
  * 1. 首次加载时，查询localStoage
@@ -147,7 +221,7 @@ var fitWidth = new FitWidth(document.getElementById('search-ipt'))
  *      |请求新数据，并保存至localStorage
  * 
  *  2. 按下enter键时，查询并更新视图，并更新localStorage数据
- */    
+ */
 var updateWeather = {
   // 保存上次查询结果
   oldData: null,
@@ -166,10 +240,10 @@ var updateWeather = {
   weatherIconDOM: document.getElementById('weather-icon').querySelector('use'),
   waveWrapperDOM: document.getElementById('wave-wrapper'),
 
-  getData(responseText){
-    
+  getData(responseText) {
+
     // 如果有请求到的数据
-    if(responseText){
+    if (responseText) {
       // 原始数据
       this.originData = responseText;
       // 获取有用数据，挂到this上
@@ -179,9 +253,9 @@ var updateWeather = {
     } else {
       // 获取本地数据
       var localData = util.loadFromLocal('__oldData');
-      
+
       // 如果本地有数据
-      if(localData) {
+      if (localData) {
         this.address = localData.address;
         this.cond_txt_now = localData.cond_txt_now;
         this.cond_code_now = localData.cond_code_now;
@@ -209,12 +283,12 @@ var updateWeather = {
   },
   // 首次刷新初始化页面
   // 由locationOnSuccess（jsonp的callback）调用
-  init(responseText, type){
+  init(responseText, type) {
     // 参数type可选
     // if(true) => iplocated 不更新至搜索历史
     // if(false) => 更新进搜索历史
     this.type = type;
-    
+
     // 获取处理过的数据
     // 获取responseText或localStorage中数据
     this.getData(responseText);
@@ -224,7 +298,7 @@ var updateWeather = {
     // var status = this.update();
 
     // 保存数据
-    if(responseText) {
+    if (responseText) {
       // 如果有请求到的数据，那么更新至localStoage;
       util.saveToLocal({
         address: this.address,
@@ -247,14 +321,14 @@ var updateWeather = {
     //   return true
     // }
   },
-  extractWeather(){
+  extractWeather() {
     var weather = JSON.parse(this.originData.weather)["HeWeather6"][0];
     var air = JSON.parse(this.originData.air)["HeWeather6"][0];
     // 天气参数
-    if(!weather.status === 'ok') return false;
+    if (!weather.status === 'ok') return false;
     this.address = weather.basic.location;
     this.cond_txt_now = weather.now.cond_txt;
-    
+
     // 天气代码
     this.cond_code_now = Number(weather.now.cond_code);
     this.tmp_now = weather.now.tmp;
@@ -263,22 +337,22 @@ var updateWeather = {
     this.comf = weather.lifestyle[0].brf;
     this.aqi = air.air_now_city.aqi;
 
-    return true
+    return true;
   },
-  update(){
+  update() {
     this.searchInputDOM.setAttribute('value', this.address);
-    this.searchInputDOM.value =  this.address;
-    
+    this.searchInputDOM.value = this.address;
+
     // 现在天气状况
     util.textChangeAnimate(this.skyconDOM, this.cond_txt_now);
 
-    if(this.cond_txt_now.length >= 4) {
+    if (this.cond_txt_now.length >= 4) {
       this.skyconDOM.setAttribute('title', this.cond_txt_now);
     }
 
     // 现在温度
     util.textChangeAnimate(this.celsiusDOM, this.tmp_now);
-    
+
     // aqi
     util.textChangeAnimate(this.aqiDOM, this.aqi);
     // 生活指数
@@ -290,19 +364,19 @@ var updateWeather = {
 
     this.dateToday = this.date.weekDay + this.date.day + ' ' + this.date.month;
     this.nextWeekDay = this.date.nextWeekDay;
-    
+
     // 今天日期
     util.textChangeAnimate(this.dateDOM, this.dateToday);
     // 明天日期
     util.textChangeAnimate(this.nextWeekDayDOM, this.nextWeekDay);
-    
+
     // 更新天气图标
-    updateIcon.call(this, this.cond_code_now, this.weatherIconDOM)
+    updateIcon.call(this, this.cond_code_now, this.weatherIconDOM);
 
     // 更新搜索历史
     // 如果是用户搜索
-    if(!this.type) {
-      searchHistory.updateDropdown(this.address)
+    if (!this.type) {
+      searchHistory.updateDropdown(this.address);
     }
 
     function updateIcon(index, target) {
@@ -345,7 +419,7 @@ var updateWeather = {
           break;
         case 101:
         case 103:
-          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.partlyCloudy)
+          target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.partlyCloudy);
           break;
         case 104:
           target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.overcast);
@@ -427,25 +501,25 @@ var updateWeather = {
         case 999:
         default:
           target.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + iconDict.unknown);
-          console.log('unknown weather')
+          console.log('unknown weather');
       }
     }
 
-    return true
+    return true;
   }
-}
+};
 
-class Search{
-  constructor(ele){
+class Search {
+  constructor(ele) {
     this.ele = ele;
-  
+
     this.dropdown = null;
-  
+
     // input首次加载城市
     this.originCity = '';
     this.init();
   }
-  init(){
+  init() {
     var _this = this;
     // 绑定事件
     // 1.只有keyup回车可触发查询天气
@@ -453,55 +527,55 @@ class Search{
     // 3.blur恢复为focus前的value
 
     this.ele.addEventListener('keyup', function (e) {
-      if(e.keyCode === 13 && e.target.value.trim()) {
+      if (e.keyCode === 13 && e.target.value.trim()) {
         tool.getWeather(e.target.value.trim());
         // 如何获取promise状态，根据状态判定是否移除
         // this.removeEventListener('blur', t)
       }
-    })
-    this.ele.addEventListener('focus', function(e){
+    });
+    this.ele.addEventListener('focus', function (e) {
       e.stopPropagation();
 
-      this.addEventListener('transitionend', function(e){
-        if(e.propertyName === 'opacity'){
+      this.addEventListener('transitionend', function (e) {
+        if (e.propertyName === 'opacity') {
           this.value = '';
           this.style.opacity = 1;
         }
-      })
+      });
       this.style.opacity = 0;
 
       _this.originCity = this.value;
-      
-      if(!document.querySelector('.dropdowm')) {
+
+      if (!document.querySelector('.dropdowm')) {
         // 去掉可能存在的收藏mark dropdown
-        util.fadeOut(document.querySelector('.mark-dropdown'))
+        util.fadeOut(document.querySelector('.mark-dropdown'));
 
         _this.dropdown = _this.genDropdown();
       }
-    })
+    });
 
-    this.ele.addEventListener('click', function(e){
+    this.ele.addEventListener('click', function (e) {
       e.stopPropagation();
-    })
+    });
 
     var t1 = function (e) {
-        // console.log(e.target)
-        _this.value = _this.originCity;
-        fitWidth.setWidth();
-        
-        // 不再显示搜索历史
-        util.fadeOut(document.querySelector('.dropdown'))
+      // console.log(e.target)
+      _this.value = _this.originCity;
+      fitWidth.setWidth();
+
+      // 不再显示搜索历史
+      util.fadeOut(document.querySelector('.dropdown'));
     }.bind(this);
-    window.addEventListener('click', t1)
+    window.addEventListener('click', t1);
   }
-  genDropdown(){
+  genDropdown() {
     this.citySearched = util.loadFromLocal('__citySearched__');
 
     this.domEle = document.createElement('ul');
     this.domEle.classList.add('dropdown');
     var fragment = document.createDocumentFragment();
-   
-    if(!this.citySearched || this.citySearched.length === 0) {
+
+    if (!this.citySearched || this.citySearched.length === 0) {
       var li = document.createElement('li');
       li.innerHTML = `<p class="no-history">no history</p>`;
       fragment.appendChild(li);
@@ -523,63 +597,63 @@ class Search{
                             </svg>
                           </span>
                         </div>`;
-          
-          if(Array.isArray(cityMarked) && cityMarked.indexOf(value) !== -1){
+
+          if (Array.isArray(cityMarked) && cityMarked.indexOf(value) !== -1) {
             li.querySelector('.mark').classList.add('active');
           }
           fragment.appendChild(li);
         }
-      })
+      });
     }
 
     this.domEle.appendChild(fragment);
-    
-    util.fadeIn(this.domEle, this.ele.parentNode)
+
+    util.fadeIn(this.domEle, this.ele.parentNode);
 
     this.bindDropdown();
   }
-  bindDropdown(){
+  bindDropdown() {
     var _this = this;
-    this.domEle.addEventListener('click', function(e) {
+    this.domEle.addEventListener('click', function (e) {
       e.stopPropagation();
       var tagName = e.target.tagName.toLowerCase();
-      if(tagName !== 'ul' && tagName !== 'li') {
+      if (tagName !== 'ul' && tagName !== 'li') {
         var index = [].indexOf.call(this.children, parentUntil(e.target, 'li'));
         var ele = this.children[index];
         var cityLink = ele.querySelector('a');
         var markIcon = ele.querySelector('.mark');
         var closeIcon = ele.querySelector('.delete');
 
-        if(tagName === 'a') {
+        if (tagName === 'a') {
           tool.getWeather(cityLink.innerText);
-        } else if(e.target.classList.contains('mark') || parentUntil(e.target, 'span').classList.contains('mark')){
+        } else if (e.target.classList.contains('mark') || parentUntil(e.target, 'span').classList.contains('mark')) {
           // 如果点的是收藏按钮
 
           // 如果还未收藏， 点亮并存到localStorage;
-          if(! markIcon.classList.contains('active')) {
+          if (!markIcon.classList.contains('active')) {
             markIcon.classList.add('active');
             util.saveToLocal(cityLink.innerText, '__cityMarked__');
           } else {
             markIcon.classList.remove('active');
             util.removeFromLocal(cityLink.innerText, '__cityMarked__');
           }
-        } else if(e.target.classList.contains('delete') || parentUntil(e.target, 'span').classList.contains('delete')) {
+        } else if (e.target.classList.contains('delete') || parentUntil(e.target, 'span').classList.contains('delete')) {
           // 如果点的是删除按钮
           util.removeFromLocal(cityLink.innerText, '__citySearched__');
           _this.deleteDropdownItem(index);
         }
       }
-    })
+    });
 
     function parentUntil(ele, tagName) {
-      if(ele.parentNode.tagName.toLowerCase() === tagName) {
+      if (ele.parentNode.tagName.toLowerCase() === tagName) {
         return ele.parentNode;
       } else {
         return parentUntil(ele.parentNode, tagName);
       }
     }
   }
-  updateDropdown(item){
+  updateDropdown(item) {
     // 1.dropdown只有 no history
     // 2.dropdown已经有内容
     var li = document.createElement('li');
@@ -597,40 +671,40 @@ class Search{
                     </span>
                   </div>`;
 
-    if(this.domEle && this.domEle.querySelector('.no-history')) {
+    if (this.domEle && this.domEle.querySelector('.no-history')) {
       var noHistory = this.domEle.querySelector('li');
       this.domEle.replaceChild(li, noHistory);
-    } else if(this.domEle){
-      var history = Array.from(this.domEle.querySelectorAll('a')).map(ele => ele.innerText)
-      if(history.indexOf(item) === -1) {
+    } else if (this.domEle) {
+      var history = Array.from(this.domEle.querySelectorAll('a')).map(ele => ele.innerText);
+      if (history.indexOf(item) === -1) {
         this.domEle.appendChild(li);
       }
     }
     util.saveToLocal(item, '__citySearched__');
   }
-  deleteDropdownItem(index){
+  deleteDropdownItem(index) {
     var length = this.domEle.children.length;
-    if(length > 1) {
+    if (length > 1) {
       this.domEle.removeChild(this.domEle.children[index]);
     } else {
       this.domEle.removeChild(this.domEle.children[index]);
       var li = document.createElement('li');
       li.innerHTML = `<p class="no-history">no history</p>`;
-      this.domEle.appendChild(li)
+      this.domEle.appendChild(li);
     }
   }
 }
 
-var searchHistory = new Search(document.getElementById('search-ipt'))
+var searchHistory = new Search(document.getElementById('search-ipt'));
 
 /* drop-btn 绑定事件*/
-class DropBtn{
-  constructor(ele){
+class DropBtn {
+  constructor(ele) {
     this.ele = ele;
     this.dropBtn = document.querySelector('.btn');
     // 生成的dropdown
     this.dropdown = null;
-  
+
     this.bind();
   }
   bind() {
@@ -641,30 +715,29 @@ class DropBtn{
       e.stopPropagation();
       // 如果还未生成dropdown
       if (!document.querySelector('.mark-dropdown')) {
-        
+
         // 去掉可能存在的搜索记录dropdown
-        util.fadeOut(document.querySelector('.dropdown'))
+        util.fadeOut(document.querySelector('.dropdown'));
 
         _this.cityMarked = util.loadFromLocal('__cityMarked__');
         _this.dropdown = new Dropdown(_this.ele, _this.cityMarked, 3);
 
-        util.fadeIn(_this.dropdown.domEle, _this.ele)
+        util.fadeIn(_this.dropdown.domEle, _this.ele);
       } else {
-        util.fadeOut(document.querySelector('.mark-dropdown'))
+        util.fadeOut(document.querySelector('.mark-dropdown'));
       }
-    })
+    });
 
-
-    var t2 = function() {
+    var t2 = function () {
       // 不再显示收藏
-      util.fadeOut(document.querySelector('.mark-dropdown'))
-    }
+      util.fadeOut(document.querySelector('.mark-dropdown'));
+    };
 
-    window.addEventListener('click', t2)
+    window.addEventListener('click', t2);
   }
 }
 
-new DropBtn(document.getElementById('drop-btn'))
+new DropBtn(document.getElementById('drop-btn'));
 
 /**
  * 输入容器元素，数组
@@ -684,23 +757,23 @@ new DropBtn(document.getElementById('drop-btn'))
  * 应该再加length为空时，innerText值
  */
 class Dropdown {
-  constructor(ele, arr, type){
+  constructor(ele, arr, type) {
     this.ele = ele;
     this.arr = arr;
     this.type = type;
-  
+
     // 生成的元素
     this.domEle = null;
-  
+
     this.genDOM();
   }
-  genDOM(){
-    if(this.type === 3) {
+  genDOM() {
+    if (this.type === 3) {
       this.domEle = document.createElement('ul');
       this.domEle.classList.add('mark-dropdown');
       var fragment = document.createDocumentFragment();
 
-      if(Array.isArray(this.arr) && this.arr.length){
+      if (Array.isArray(this.arr) && this.arr.length) {
         this.arr.forEach(value => {
           if (typeof value === 'string') {
             var li = document.createElement('li');
@@ -714,85 +787,253 @@ class Dropdown {
                             </div>`;
             fragment.appendChild(li);
           }
-        })
+        });
       } else {
         var li = document.createElement('li');
         li.innerHTML = `<p class="no-mark">no bookmark</p>`;
         fragment.appendChild(li);
       }
       this.domEle.appendChild(fragment);
-      this.bind()
+      this.bind();
     }
   }
   bind() {
-      var _this = this;
+    var _this = this;
 
-      this.domEle.addEventListener('click', function(e) {
-        // console.log(1)
-        // 防止window捕获
-        e.stopPropagation();
-        var tagName = e.target.tagName.toLowerCase();
-        if(tagName !== 'ul' && tagName !== 'li') {
+    this.domEle.addEventListener('click', function (e) {
+      // console.log(1)
+      // 防止window捕获
+      e.stopPropagation();
+      var tagName = e.target.tagName.toLowerCase();
+      if (tagName !== 'ul' && tagName !== 'li') {
 
-          // 获取到点击元素所在li元素的index
-          var index = [].indexOf.call(this.children, parentUntil(e.target, 'li'));
-          var ele = this.children[index];
-          
-          // 获取到li元素的直接子元素，根据type类型备用
-          var cityLink = ele.querySelector('a');
-          var markIcon = ele.querySelector('.mark');
-          var closeIcon = ele.querySelector('.delete');
-          
-          // 只有删除按钮
-          if(_this.type === 3) {
-            // console.log('type === 3');
-            if(tagName === 'a') {
-              tool.getWeather(cityLink.innerText);
-            } else if(e.target.classList.contains('delete') || parentUntil(e.target, 'span').classList.contains('delete')) {
-              util.removeFromLocal(cityLink.innerText, '__cityMarked__');
-              _this.deleteDropdownItem(index);
-            }
+        // 获取到点击元素所在li元素的index
+        var index = [].indexOf.call(this.children, parentUntil(e.target, 'li'));
+        var ele = this.children[index];
+
+        // 获取到li元素的直接子元素，根据type类型备用
+        var cityLink = ele.querySelector('a');
+        var markIcon = ele.querySelector('.mark');
+        var closeIcon = ele.querySelector('.delete');
+
+        // 只有删除按钮
+        if (_this.type === 3) {
+          // console.log('type === 3');
+          if (tagName === 'a') {
+            tool.getWeather(cityLink.innerText);
+          } else if (e.target.classList.contains('delete') || parentUntil(e.target, 'span').classList.contains('delete')) {
+            util.removeFromLocal(cityLink.innerText, '__cityMarked__');
+            _this.deleteDropdownItem(index);
           }
         }
-      })
-  
-      function parentUntil(ele, tagName) {
-        if(ele.parentNode.tagName.toLowerCase() === tagName) {
-          return ele.parentNode;
-        } else {
-          return parentUntil(ele.parentNode, tagName);
-        }
       }
+    });
+
+    function parentUntil(ele, tagName) {
+      if (ele.parentNode.tagName.toLowerCase() === tagName) {
+        return ele.parentNode;
+      } else {
+        return parentUntil(ele.parentNode, tagName);
+      }
+    }
   }
-  deleteDropdownItem(index){
+  deleteDropdownItem(index) {
     var length = this.domEle.children.length;
 
-    if(this.type === 3) {
-      if(length > 1) {
+    if (this.type === 3) {
+      if (length > 1) {
         this.domEle.removeChild(this.domEle.children[index]);
       } else {
         this.domEle.removeChild(this.domEle.children[index]);
         var li = document.createElement('li');
-  
+
         // 只有删除按钮
         li.innerHTML = `<p class="no-mark">no bookmark</p>`;
-        this.domEle.appendChild(li)
+        this.domEle.appendChild(li);
       }
     }
   }
 }
 
-
 // 页面失去焦点时，去掉下拉菜单
-window.addEventListener('blur', function(){
+window.addEventListener('blur', function () {
   Array.from(document.querySelectorAll('.dropdown')).map(ele => {
-    if(ele) {
-      util.fadeOut(ele)
+    if (ele) {
+      util.fadeOut(ele);
     }
-  })
+  });
   Array.from(document.querySelectorAll('.mark-dropdown')).map(ele => {
-    if(ele) {
-      util.fadeOut(ele)
+    if (ele) {
+      util.fadeOut(ele);
     }
-  })
-})
+  });
+});
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+const util = {
+  /**
+   * 获取无单位的元素getComputedStyle属性值
+   * 
+   * 输入 ele, attr
+   * 输出 去除单位的属性
+   */
+  trimUnit: function (ele, attr) {
+    return parseFloat(getComputedStyle(ele)[attr]);
+  },
+
+  /*
+   * para为对象
+   * para.method  三种类型 => 'GET','POST','JSONP'
+   * para.query   为对象，用于拼接url
+   * 
+   */
+  request: function (para) {
+    var method = para.method || 'GET';
+    var url = para.url;
+    if (typeof para.query === 'object') {
+      for (key in para.query) {
+        if (para.query.hasOwnProperty(key) && para.query[key]) {
+          url += key + '=' + para.query[key] + '&';
+        }
+      }
+      url = url.slice(0, -1);
+    }
+
+    if (method.toUpperCase() === 'GET' || method.toUpperCase === 'POST') {
+      return new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        xhr.send();
+        xhr.onload = function () {
+          if (xhr.status === 200 || xhr.status === 304) {
+            resolve(xhr.responseText);
+          } else {
+            reject(new Error(xhr.statusText));
+          }
+        };
+
+        xhr.onerror = function () {
+          reject(new Error('Ajax error'));
+        };
+      });
+    } else if (method.toUpperCase() === 'JSONP') {
+      var script = document.createElement('script');
+      script.src = url + '&callback=locationOnSuccess';
+      document.head.appendChild(script);
+      document.head.removeChild(script);
+    }
+  },
+  genDate() {
+    var locale = {
+      // dayNames: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday],
+      shortDayNames: ['Sun.', 'Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.', 'Sat.'],
+      // monthNames: [January, February, March, April, May, June, July, August, September, October, November, December],
+      shortMonthNames: ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.']
+    };
+    var result = {};
+    var date = new Date();
+    result.day = date.getDate();
+    result.weekDay = locale.shortDayNames[date.getDay()];
+    result.month = locale.shortMonthNames[date.getMonth()];
+    result.nextWeekDay = locale.shortDayNames[date.getDay() + 1] || locale.shortDayNames[0];
+    return result;
+  },
+  /***
+   * localData要存的数据 
+   * keyName存储为localStorage键名
+   */
+  saveToLocal(localData, keyName) {
+    var oldData = localStorage.getItem(keyName);
+    if (!oldData && typeof localData === 'string') {
+      oldData = [];
+      oldData.push(localData);
+    } else if (oldData && typeof localData === 'string') {
+      oldData = JSON.parse(oldData);
+      if (oldData.indexOf(localData) === -1) {
+        oldData.push(localData);
+      }
+    } else {
+      oldData = {};
+      for (key in localData) {
+        oldData[key] = localData[key];
+      }
+    }
+
+    localStorage.setItem(keyName, JSON.stringify(oldData));
+    // console.log(localStorage.getItem(keyName))
+  },
+  /***
+  * keyName要取的localStorage键名
+  */
+  loadFromLocal(keyName) {
+    var localData = localStorage.getItem(keyName);
+    if (localData) {
+      return JSON.parse(localData);
+    }
+    return false;
+  },
+
+  removeFromLocal(localData, keyName) {
+    var oldData = localStorage.getItem(keyName);
+    if (oldData && typeof localData === 'string') {
+      oldData = JSON.parse(oldData);
+      if (Array.isArray(oldData)) {
+        oldData = oldData.filter(value => value !== localData);
+        localStorage.setItem(keyName, JSON.stringify(oldData));
+      }
+    }
+  },
+
+  // 元素fadeout动画
+  fadeOut(ele) {
+    if (!ele) return;
+    ele.style.opacity = 0;
+    setTimeout(function () {
+      ele.parentNode.removeChild(ele);
+    }, 500);
+  },
+  // 元素fadein动画
+  fadeIn(ele, parent) {
+    if (!ele) return;
+    ele.style.opacity = 0;
+    parent.appendChild(ele);
+    setTimeout(function () {
+      ele.style.opacity = 1;
+    });
+  },
+  // 寻找ele元素tag为tagName的祖先元素
+  parentUntil(ele, tagName) {
+    if (!ele.parentNode.tagName) return;
+    if (ele.parentNode.tagName.toLowerCase() === tagName) {
+      return ele.parentNode;
+    } else {
+      return util.parentUntil(ele.parentNode, tagName);
+    }
+  },
+  // 文本变化时动画
+  textChangeAnimate(ele, text) {
+    ele.classList.remove('text-in');
+    ele.classList.add('text-out');
+    ele.addEventListener('animationend', function (e) {
+      this.classList.remove('text-out');
+      if (e.target === e.currentTarget) {
+        this.innerText = text;
+        this.classList.add('text-in');
+      }
+    });
+  }
+};
+
+module.exports = util;
+
+/***/ })
+/******/ ]);

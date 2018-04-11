@@ -1,6 +1,18 @@
 # browser-weather
 
-A pretty weather web page built with origin JS and CSS(No third library).
+* :partly_sunny:A pretty weather forcast webpage built with vanilla JS and CSS(No third library).
+
+* :sun_with_face: Only support searching cities in China :panda_face:.
+
+## 功能特色
+
+* 配色，动画，精挑细选的字体
+* 支持中国城市拼音，汉字搜索天气
+* IP定位获取首屏城市天气
+* 显示搜索历史，收藏城市
+
+
+## 进度
 
 #### finished
 - [x] 输入框宽度随文字长短自动变化  
@@ -34,3 +46,7 @@ A pretty weather web page built with origin JS and CSS(No third library).
 * 事件代理，阻止冒泡的效用  
 * js修改innerText时触发动画效果
 * ...
+
+## 依赖
+
+* [百度地图API](http://lbsyun.baidu.com/index.php?title=webapi) / [和风天气API](https://www.heweather.com/documents)
