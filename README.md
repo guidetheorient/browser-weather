@@ -4,6 +4,9 @@
 
 * :sun_with_face: Only support searching cities in China :panda_face:.
 
+## 预览
+[预览](https://guidetheorient.github.io/browser-weather/dist/)
+
 ## 功能特色
 
 * 配色，动画，精挑细选的字体
